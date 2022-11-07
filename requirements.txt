@@ -1,0 +1,11 @@
+# fastapi
+fastapi
+uvicorn
+
+
+#for database
+sqlalchemy
+psycopg2
+
+#for loading environment variables  #new
+python-dotenv
