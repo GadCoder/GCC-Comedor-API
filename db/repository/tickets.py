@@ -25,3 +25,12 @@ def retreative_ticket(code: str, db: Session):
 def retreative_all_tickets(db: Session):
     tickets = db.query(Ticket).all()
     return tickets
+
+
+def delete_token_by_codigo_estudiante(code: str, db: Session):
+    existing_ticket = db.query(Ticket).filter(Ticket.codigo_estudiante == code)
+    if not existing_ticket:
+        return 0
+    existing_ticket.delete(synchronize_session=False)
+    db.commit()
+    return 1

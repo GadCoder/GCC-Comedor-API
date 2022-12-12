@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
-
 from schemas.Ticket import TicketCreate, ShowTicket
 from db.session import get_db
 from db.repository.tickets import create_new_ticket, get_number_of_tickets_from_shift, retreative_ticket, \
-    retreative_all_tickets
+    retreative_all_tickets, delete_token_by_codigo_estudiante
 
 router = APIRouter()
 
@@ -40,3 +39,13 @@ def get_ticket_info(code: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"No se encuentra el ticket")
     return ticket
+
+
+@router.delete("/delete-ticket/{code}")
+def delete_ticket(code: str, db: Session = Depends(get_db)):
+    ticket = delete_token_by_codigo_estudiante(code=code, db=db)
+    if not ticket:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"No se encuentra el ticket")
+    return {"msg": "Ticket eliminado"}
+    
