@@ -6,6 +6,7 @@ from db.base_class import Base
 
 class Estudiante(Base):
     codigo_estudiante = Column(String, primary_key=True, index=True)
+    correo = Column(String, nullable=False)
     nombres = Column(String, nullable=False)
     apellido_pat = Column(String, nullable=False)
     apellido_mat = Column(String, nullable=False)

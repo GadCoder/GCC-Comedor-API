@@ -9,3 +9,7 @@ psycopg2
 
 #for loading environment variables  #new
 python-dotenv
+
+
+#for email validation            #new
+pydantic[email]
