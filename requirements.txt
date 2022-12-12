@@ -13,3 +13,15 @@ python-dotenv
 
 #for email validation            #new
 pydantic[email]
+
+
+#hashing              #new
+passlib[bcrypt]
+
+
+#for jwt tokens
+python-jose
+
+
+#for accessing from data
+python-multipart
