@@ -5,7 +5,7 @@ from fastapi import Depends
 from db.models.Estudiante import Estudiante
 from schemas.Estudiante import EstudianteCreate, ShowEstudiante, ShowFullEstudiante
 from db.session import get_db
-from db.repository.estudiantes import create_new_estudiante, get_estudiante_by_code
+from db.repository.estudiantes import create_new_estudiante, get_estudiante_by_code, get_estudiante
 from apis.version1.route_login import get_current_estudiante_from_token
 from fastapi import status, HTTPException
 
@@ -23,8 +23,7 @@ def create_estudiante(estudiante: EstudianteCreate, db: Session = Depends(get_db
     )
 
 
-@router.get("/read-estudiante", response_model=ShowFullEstudiante)
-def read_estudiante_from_token(db: Session = Depends(get_db), current_estudiante: Estudiante = Depends(get_current_estudiante_from_token)):
-    estudiante = get_estudiante_by_code(
-        current_estudiante.codigo_estudiante, db=db)
+@router.get("/read-estudiante/", response_model=ShowFullEstudiante)
+def read_estudiante(email: str, password: str, db: Session = Depends(get_db)):
+    estudiante = get_estudiante(email=email, password=password, db=db)
     return estudiante

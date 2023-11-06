@@ -10,6 +10,7 @@ from schemas.tokens import Token
 from db.repository.login import get_estudiante
 from core.security import create_access_token
 from core.config import settings
+import requests
 
 router = APIRouter()
 
@@ -25,19 +26,38 @@ def authenticate_estudiante(username: str, password: str, db: Session):
     return user
 
 
-@router.post("/get-token", response_model=Token)
+@router.post("/get-token")
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = authenticate_estudiante(form_data.username, form_data.password, db)
-    if not user:
+    url = 'https://sumvirtual.unmsm.edu.pe/sumapi/loguearse'
+    headers = {
+        'accept': 'application/json',
+        'Accept-Encoding': 'gzip',
+        'authorization': 'AUTH TOKEN',
+        'Connection': 'Keep-Alive',
+        'Content-Length': '52',
+        'Content-Type': 'application/json',
+        'Host': 'sumvirtual.unmsm.edu.pe',
+        'User-Agent': 'okhttp/4.9.2'
+    }
+    data = {
+        'usuario': form_data.username,
+        'clave': form_data.password
+    }
+    request = requests.post(url, headers=headers, json=data)
+    status = request.status_code
+    if status != 200:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Correo o contraseña incorrecta"
         )
-    access_token_expires = timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.correo}, expires_delta=access_token_expires
-    )
+    data = request.json()
+    token = data['data'][-1]['token']
+    access_token = f'Bearer {token}'
+    cookies = request.cookies
+
+    cookie_dict = {}
+    for cookie in cookies:
+        cookie_dict[cookie.name] = cookie.value
     return {"access_token": access_token, "token_type": "bearer"}
 
 

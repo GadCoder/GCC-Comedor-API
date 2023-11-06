@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from schemas.Estudiante import EstudianteCreate
 from db.models.Estudiante import Estudiante
 from core.hashing import Hasher
+import requests
 
 
 def create_new_estudiante(estudiante: EstudianteCreate, db: Session):
@@ -19,6 +20,41 @@ def create_new_estudiante(estudiante: EstudianteCreate, db: Session):
     db.add(estudiante)
     db.commit()
     db.refresh(estudiante)
+    return estudiante
+
+
+def get_estudiante(email: str, password: str, db: Session):
+    url = 'https://sumvirtual.unmsm.edu.pe/sumapi/loguearse'
+    headers = {
+        'accept': 'application/json',
+        'Accept-Encoding': 'gzip',
+        'authorization': 'AUTH TOKEN',
+        'Connection': 'Keep-Alive',
+        'Content-Length': '52',
+        'Content-Type': 'application/json',
+        'Host': 'sumvirtual.unmsm.edu.pe',
+        'User-Agent': 'okhttp/4.9.2'
+    }
+    data = {
+        'usuario': email,
+        'clave': password
+    }
+    request = requests.post(url, headers=headers, json=data)
+    status = request.status_code
+    if status != 200:
+        return None
+    data = request.json()['data'][-1]['dto']
+    estudiante = Estudiante(
+        codigo_estudiante=data['codAlumno'],
+        correo=email,
+        password=password,
+        nombres=data['nomAlumno'],
+        apellido_pat=data['apePaterno'],
+        apellido_mat=data['apeMaterno'],
+        foto_url=data['foto'],
+        esta_penalizado=False,
+        es_jedi=False
+    )
     return estudiante
 
 
