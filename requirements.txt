@@ -24,3 +24,5 @@ python-jose
 
 #for accessing from data
 python-multipart
+
+requests
