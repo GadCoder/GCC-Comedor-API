@@ -18,7 +18,7 @@ def get_number_of_tickets_from_shift(shift: str, db: Session):
 
 
 def retreative_ticket(code: str, db: Session):
-    ticket = db.query(Ticket).filter(Ticket.code == code).first()
+    ticket = db.query(Ticket).filter(Ticket.codigo_estudiante == code).first()
     return ticket
 
 

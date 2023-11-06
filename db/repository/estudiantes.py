@@ -23,6 +23,7 @@ def create_new_estudiante(estudiante: EstudianteCreate, db: Session):
     return estudiante
 
 
+
 def get_estudiante(email: str, password: str, db: Session):
     url = 'https://sumvirtual.unmsm.edu.pe/sumapi/loguearse'
     headers = {
@@ -55,6 +56,8 @@ def get_estudiante(email: str, password: str, db: Session):
         esta_penalizado=False,
         es_jedi=False
     )
+    if get_estudiante_by_code(estudiante.codigo_estudiante, db=db) is None:
+        create_new_estudiante(estudiante, db=db)
     return estudiante
 
 
