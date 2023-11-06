@@ -12,14 +12,10 @@ router = APIRouter()
 
 
 @router.post("/create-platillo/", response_model=ShowPlatillo)
-def create_platillo(platillo: PlatilloCreate, db: Session = Depends(get_db), current_user: Estudiante = Depends(get_current_estudiante_from_token)):
-    if current_user.es_jedi:
-        platillo = create_new_platillo(platillo=platillo, db=db)
-        return platillo
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=f"Usuario con codigo {current_user.code} no tiene autorizacion para crear nuevos platos"
-    )
+def create_platillo(platillo: PlatilloCreate, db: Session = Depends(get_db)):
+    platillo = create_new_platillo(platillo=platillo, db=db)
+    return platillo
+
 
 
 @router.get("/get/all")
