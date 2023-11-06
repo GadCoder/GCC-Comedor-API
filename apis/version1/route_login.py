@@ -44,8 +44,8 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
         'clave': form_data.password
     }
     request = requests.post(url, headers=headers, json=data)
-    status = request.status_code
-    if status != 200:
+    request_status = request.status_code
+    if request_status != 200:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Correo o contraseña incorrecta"
