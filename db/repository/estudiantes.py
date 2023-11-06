@@ -46,7 +46,7 @@ def get_estudiante(email: str, password: str, db: Session):
     data = request.json()['data'][-1]['dto']
     estudiante = Estudiante(
         codigo_estudiante=data['codAlumno'],
-        correo=email,
+        correo=f"{email}@unmsm.edu.pe",
         password=password,
         nombres=data['nomAlumno'],
         apellido_pat=data['apePaterno'],
